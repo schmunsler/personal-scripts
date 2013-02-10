@@ -22,7 +22,6 @@ function get_real_dirs {
 # links all other possible permutations to the given dir
 function canonize { # args: <path of dir to canonize>
     realdir=$1
-    echo "canonizing $realdir"
     # get all locations that should link to realdir
     allpaths=( $(get_permutations $realdir) )
     for path in ${allpaths[@]}; do
@@ -62,7 +61,6 @@ function make_link { # args: <path to target> <path to link>
             # check if it exists (and is a dir)
             if [ ! -d $partialpath ]; then
                 # if not, make it
-                echo "making $partialpath"
                 mkdir $partialpath
                 # and canonize the new dir. Yay recursion!
                 ( canonize $partialpath )
