@@ -1,1 +1,25 @@
-../../bin/dolphin
+#!/bin/bash
+# wrapper for dolphin to make it open new tabs instead of windows
+# place somewhere earlier in your path than your current dolphin (e.g.$HOME/bin)
+# source: https://github.com/schmunsler/personal-scripts
+
+# if Dolphin is already running
+if [ ! -z $(qdbus | grep "org.kde.dolphin") ]; then
+    bus="qdbus org.kde.dolphin /dolphin/Dolphin_1"
+    # open each argument in a new tab
+    for d in "$@"; do
+        # ignore non-directory args for now
+        if [ -d "$d" ]; then 
+            # open a new tab
+            $bus org.kde.KMainWindow.activateAction new_tab
+            # change the url to the argument
+            $bus org.kde.dolphin.MainWindow.changeUrl "$d"
+        fi
+    done
+    # raise the window
+    $bus com.trolltech.Qt.QWidget.showNormal
+    $bus com.trolltech.Qt.QWidget.raise
+else
+    # no running instance, start normally
+    /usr/bin/dolphin "$@"
+fi
