@@ -6,7 +6,7 @@
 # e.g. ./dir3/dir2/dir1 and ./dir2/dir3/dir1 will 
 # both be symlinks to ./dir1/dir2/dir3
 #
-# This is useful as a simple tagging system when you're interested
+# This is useful as a simple tagging system when you're interested in
 # files with a specific combination of tags and excluding all others
 
 # returns all dirs (not symlinks) breadth-first
