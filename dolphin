@@ -1,6 +1,7 @@
 #!/bin/bash
 # wrapper for dolphin to make it open new tabs instead of windows
 # place somewhere earlier in your path than your current dolphin (e.g.$HOME/bin)
+# usage: dolphin [URL(s)]
 # source: https://github.com/schmunsler/personal-scripts
 
 # if Dolphin is already running
@@ -9,11 +10,17 @@ if [ ! -z $(qdbus | grep "org.kde.dolphin") ]; then
     # open each argument in a new tab
     for d in "$@"; do
         # ignore non-directory args for now
-        if [ -d "$d" ]; then 
-            # open a new tab
-            $bus org.kde.KMainWindow.activateAction new_tab
-            # change the url to the argument
-            $bus org.kde.dolphin.MainWindow.changeUrl "$d"
+        if [ -d "$d" ]; then
+        # entering critical section, lock to make operation atomic
+        # see: http://stackoverflow.com/a/169969
+            set -e
+            (
+                flock -x -w 10 200
+                # open a new tab
+                $bus org.kde.KMainWindow.activateAction new_tab
+                # change the url to the argument
+                $bus org.kde.dolphin.MainWindow.changeUrl "$d"
+            ) 200>/var/lock/.dolphin.lock
         fi
     done
     # raise the window
