@@ -8,11 +8,12 @@
 if [ ! -z $(qdbus | grep "org.kde.dolphin") ]; then
     bus="qdbus org.kde.dolphin /dolphin/Dolphin_1"
     # open each argument in a new tab
-    for d in "$@"; do
+    for arg in "$@"; do
+        d=$(realpath "$arg") # convert relative paths to absolute
         # ignore non-directory args for now
         if [ -d "$d" ]; then
-        # entering critical section, lock to make operation atomic
-        # see: http://stackoverflow.com/a/169969
+            # entering critical section, lock to make operation atomic
+            # see: http://stackoverflow.com/a/169969
             set -e
             (
                 flock -x -w 10 200
