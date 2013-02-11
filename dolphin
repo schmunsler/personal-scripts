@@ -18,15 +18,15 @@ if [ ! -z $(qdbus | grep "org.kde.dolphin") ]; then
             (
                 flock -x -w 10 200
                 # open a new tab
-                $bus org.kde.KMainWindow.activateAction new_tab
+                $bus org.kde.KMainWindow.activateAction new_tab >/dev/null
                 # change the url to the argument
-                $bus org.kde.dolphin.MainWindow.changeUrl "$d"
+                $bus org.kde.dolphin.MainWindow.changeUrl "$d" >/dev/null
             ) 200>/var/lock/.dolphin.lock
         fi
     done
     # raise the window
-    $bus com.trolltech.Qt.QWidget.showNormal
-    $bus com.trolltech.Qt.QWidget.raise
+    $bus com.trolltech.Qt.QWidget.showNormal >/dev/null
+    $bus com.trolltech.Qt.QWidget.raise >/dev/null
 else
     # no running instance, start normally
     /usr/bin/dolphin "$@"
