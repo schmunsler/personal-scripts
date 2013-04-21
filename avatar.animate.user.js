@@ -13,6 +13,6 @@
 window.addEventListener('load', function() {
    var images = document.getElementsByTagName('img');
    for(i=0; i<images.length; i++) {
-      images[i].src = images[i].src.replace(/googleusercontent\.com(.*)s48-c-k/, "googleusercontent\.com$1s48-c");
+      images[i].src = images[i].src.replace(/googleusercontent\.com(.*)s(48|32)-c-k/, "googleusercontent\.com$1s$2-c");
    }
 }, false);
