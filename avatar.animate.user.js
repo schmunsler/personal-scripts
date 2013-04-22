@@ -13,6 +13,7 @@
 // Change any of these to false to disable animation for their respective cases.
 var animate48px = true; // normal posts
 var animate46px = true; // profile floating banner
+var animate44px = true; // community members and moderators list
 var animate32px = true; // comments and reshares
 var animate24px = true; // post activity / "who +1'd this comment"
 // Note that currently avatars in the chat sidebar, the notification drop-down
@@ -22,6 +23,7 @@ var animate24px = true; // post activity / "who +1'd this comment"
 var sizes = [];
 if (animate48px) { sizes.push("48"); }
 if (animate46px) { sizes.push("46"); }
+if (animate44px) { sizes.push("44"); }
 if (animate32px) { sizes.push("32"); }
 if (animate24px) { sizes.push("24"); }
 
