@@ -3,9 +3,6 @@
 // (for Firefox use Greasemonkey)
 // Released under WTFPL (http://www.wtfpl.net/txt/copying/)
 
-// Note that currently avatars in the chat sidebar and notification drop-down
-// will not animate because iframes suck.
-
 // ==UserScript==
 // @name G+ Animated Avatars
 // @description Animate avatars on Google+
@@ -18,6 +15,9 @@ var animate48px = true; // normal posts
 var animate46px = true; // profile floating banner
 var animate32px = true; // comments and reshares
 var animate24px = true; // post activity / "who +1'd this comment"
+// Note that currently avatars in the chat sidebar, the notification drop-down
+// and on sites other than plus.google.com (e.g. Blogger) will not animate 
+// because iframes suck.
 
 var sizes = [];
 if (animate48px) { sizes.push("48"); }
@@ -25,7 +25,7 @@ if (animate46px) { sizes.push("46"); }
 if (animate32px) { sizes.push("32"); }
 if (animate24px) { sizes.push("24"); }
 
-pattern = "googleusercontent\.com(.*)s(" + sizes.join('|') + ")-c-k";
+var pattern = "googleusercontent\.com(.*)s(" + sizes.join('|') + ")-c-k";
 var regex = new RegExp(pattern);
 
 function animate() {
