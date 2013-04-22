@@ -13,7 +13,7 @@
 function animate() {
     var images = document.getElementsByTagName('img');
     for(i=0; i<images.length; i++) {
-        if (images[i].src.match(/googleusercontent\.com(.*)s(48|32|24)-c-k/) != null) {
+        if (images[i].src.match(/googleusercontent\.com(.*)s(48|46|32|24)-c-k/) != null) {
             // the test keeps animations from restaring on each call
             images[i].src = images[i].src.replace(/googleusercontent\.com(.*)s(48|46|32|24)-c-k/, "googleusercontent\.com$1s$2-c");
         }
