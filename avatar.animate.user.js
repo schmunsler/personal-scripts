@@ -26,7 +26,6 @@ if (animate32px) { sizes.push("32"); }
 if (animate24px) { sizes.push("24"); }
 
 pattern = "googleusercontent\.com(.*)s(" + sizes.join('|') + ")-c-k";
-console.log(pattern);
 var regex = new RegExp(pattern);
 
 function animate() {
@@ -40,5 +39,4 @@ function animate() {
 }
 
 window.addEventListener('load', animate, false);
-var contentPane = document.getElementById('contentPane');
 document.getElementById('contentPane').addEventListener('DOMNodeInserted', animate, false);
