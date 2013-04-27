@@ -1,33 +1,31 @@
 #!/usr/bin/env python
 
 # time_frames.py
-# A helper script to quickly and efficiently time animated gifs
-#   from sources with erratic frame rates.
-# Layers are assumed to be from SMPlayer output (with names in 
-#   the form "shot0001.png")
-# Simply delete duplicate frames and run the script to get proper
-#  timings added. The timing for the final frame is assumed to be
-#  identical to the one before it. Also don't forget that the first
-#  frame will likely be renamed "Background". Change it back before
+# A helper script to quickly and efficiently time animated gifs from sources with erratic key frame rates.
+# Layer names must contain original frame numbers (e.g. shot0001.png, frame0001.png, etc.).
+# Simply delete duplicate frames (but leave the last one) and run the script to get proper timings added. 
+# Also don't forget that the first frame will likely be renamed "Background". Change it back before
 #  deleting anything or you'll lose the timing for it!
+# If you want to keep the last frame, time it manually and it will be ignored.
 
 from gimpfu import *
-
-
+import re
 
 def time_frames(image, drawable):
-    layers = gimp.image_list()[0].layers
-    for layer in layers:
+    image = gimp.image_list()[0]
+    keep_last = (image.layers[0].name.find('ms') != -1)
+    for layer in image.layers:
         if not 'prev' in locals():
-            prev = layer.name
+            prev = int(re.search(r'\d+', layer.name).group())
+            if not keep_last:
+                prev += 1
         else:
-            gn = prev[4:8]
-            prev = layer.name
-            ln = prev[4:8]
-            diff = int(gn) - int(ln)
-            delay = diff * 40
+            gn = prev
+            prev = ln = int(re.search(r'\d+', layer.name).group())
+            delay = (gn - ln) * 40
             layer.name += '(' + str(delay) + 'ms)'
-    layers[0].name += layers[1].name[layers[1].name.find('('):]
+    if not keep_last:
+        image.remove_layer(image.layers[0])
     
 register(
     "time_frames",
