@@ -1,0 +1,8 @@
+#!/bin/bash
+# gettags: dump metadata for flac or ogg files
+# depends: flac, vorbis-tools
+
+case "$1" in
+    *.flac) metaflac --export-tags-to=- "$1" ;;
+    *.ogg ) vorbiscomment -l "$1" ;;
+esac

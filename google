@@ -1,0 +1,20 @@
+#!/bin/bash
+# google: dump first page of google search result links
+# depends: lynx, python
+
+SEARCH_PAGE="http://www.google.com/search?q="
+
+function urlencode {
+    url="$1"
+    url="${url//\"/\\\"}"
+    url=$(python -c "import urllib; print urllib.quote(\"$url\")")
+    echo "$url"
+}
+
+function GoogleScraper {
+    lynx -dump -listonly "$SEARCH_PAGE$(urlencode "$1")" \
+     | sed -rn 's/.*google.com\/url\?q=([^&]+).*/\1/p'
+}
+
+GoogleScraper "$1"
+

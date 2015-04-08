@@ -1,0 +1,36 @@
+#!/bin/bash
+# fetchlyrics: fetch lyrics from kasi-time.com for flac files in current dir
+# depends: curl, script:google, script:gettags, subsitutable apps below
+BROWSER=google-chrome
+EDITOR=kwrite
+
+EXCLUDE="inst|karaoke|からおけ|カラオケ|off vocal"
+
+mkdir -p "lyrics"
+
+echo "Fetching lyrics..."
+for f in *.flac; do
+    [[ -n "$(echo "$f" | egrep -i "$EXCLUDE")" ]] && continue
+    echo "  $f"
+    lyricfile="lyrics/${f%.*}.txt"
+    tags="$(gettags "$f")"
+    title="$(echo "$tags" | sed -n 's/TITLE=//ip')"
+    artist="$(echo "$tags" | sed -n 's/ARTIST=//ip')"
+    query="site:kasi-time.com/item intitle:\"$title $artist\""
+    url=$(google "$query" | head -1)
+    if [[ -n "$url" ]]; then
+        jsurl="$(echo "$url" \
+                 | sed -r 's/item-([0-9]+)\.html/item_js.php?no=\1/')"
+        curl -sS "$jsurl" \
+        | sed "/./,\$!d
+               s/^document.write('//
+               s/');$//
+               s/<br>/\n/g
+               s/&nbsp;/　/g" > "$lyricfile"
+        
+    else
+        echo "No results, reverting to manual entry."
+        $BROWSER "google.com/#q=$query"
+        $EDITOR "$lyricfile" 2>/dev/null
+    fi
+done
