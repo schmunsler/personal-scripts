@@ -1,0 +1,34 @@
+#!/bin/bash
+# gifframereplace: replace a frame of a gif with another gif using a local color table
+# depends: gifbuild
+
+[ $# -lt 2 ] && echo "usage: $0 gif replacement [frame no.]" && quit
+fn=${3:-1} # if no frame specified, replace first
+[ -t 1 ] && exec >"${1%.*}.new.gif" # don't output gifs to terminal
+
+function replaceFrame {
+    # This takes advantage of gifbuild -d inserting frame numbers as comments
+    # It's not part of the spec, but using it makes this possible with sed
+    # If you can't make that assumption, uncomment the next line 
+    #sed '/^image( *(#.*)?)?$/s/^image(.*)$/echo "image # $((n+=1)) \1"/e' |
+    sed "
+        /^image # $1$/,/^$/ {
+            /^image # $1$/r $2
+            d
+        }
+    "
+}
+
+function gif2frame {
+    echo "image"
+    gifbuild -d $1 | # reads file if passed, stdin otherwise
+        sed -rn "
+            /^screen map$/,/^end$/ { s/^screen/image/; p }
+            /^image( *(#.*)?)?$/,/^$/ {
+                /^image( *(#.*)?)?$/!p
+            }
+        " 
+# outputs gifbuild format image declarations to be placed in image block
+}
+
+gifbuild -d "$1" | replaceFrame $fn <(gif2frame $2) | gifbuild
